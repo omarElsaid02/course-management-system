@@ -54,6 +54,19 @@ app.get("/student-request.html", (req, res) => {
   res.sendFile(path.join(__dirname, "views/coreui/student-request.html"));
 });
 
+// Department Head Pages
+app.get("/head-dashboard.html", (req, res) => {
+  res.sendFile(path.join(__dirname, "views/coreui/head-dashboard.html"));
+});
+
+app.get("/head-queue.html", (req, res) => {
+  res.sendFile(path.join(__dirname, "views/coreui/head-queue.html"));
+});
+
+app.get("/head-request.html", (req, res) => {
+  res.sendFile(path.join(__dirname, "views/coreui/head-request.html"));
+});
+
 app.use("/api/auth", authRoutes);
 app.use("/api/requests", requestRoutes);
 app.use("/api/admin", adminRoutes);
