@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <title>Request Detail</title>
@@ -26,7 +27,8 @@
 
     <button class="btn btn-success me-2" onclick="updateRequest('resolved')">Resolve</button>
     <button class="btn btn-danger" onclick="updateRequest('rejected')">Reject</button>
-    <button class="btn btn-secondary" onclick="window.location.assign('/head-dashboard.html')">← Back to Dashboard</button>
+    <button class="btn btn-secondary" onclick="window.location.assign('/head-dashboard.html')">← Back to
+      Dashboard</button>
 
   </div>
 
@@ -35,16 +37,18 @@
     const requestId = urlParams.get("id");
 
     async function fetchRequest() {
-      const res = await fetch(`/api/admin/queue/${requestId}`);
+      const res = await fetch(`/api/admin/request/${requestId}`); // ✅ updated
       const req = await res.json();
 
       const div = document.getElementById("requestDetail");
       div.innerHTML = `
-        <p><strong>Category:</strong> ${req.category}</p>
-        <p><strong>Message:</strong> ${req.message}</p>
-        <p><strong>Status:</strong> ${req.status}</p>
-        <p><strong>ETA:</strong> ${req.estimatedProcessingTime}</p>
-      `;
+    <p><strong>Category:</strong> ${req.category}</p>
+    <p><strong>Message:</strong> ${req.message}</p>
+    <p><strong>Status:</strong> ${req.status}</p>
+    <p><strong>ETA:</strong> ${req.estimatedProcessingTime}</p>
+    <p><strong>Student:</strong> ${req.student?.name || "N/A"}</p>
+    <p><strong>Semester:</strong> ${req.semester}</p>
+  `;
     }
 
     async function updateRequest(status) {
@@ -63,4 +67,5 @@
     fetchRequest();
   </script>
 </body>
+
 </html>

@@ -11,27 +11,23 @@ router.post("/", async (req, res) => {
     return res.status(400).send("Missing required fields.");
   }
 
-  try {
-    const count = await Request.countDocuments({ category, status: "pending" });
-    const estimatedMinutes = 15 * count;
-    const estimatedHours = Math.ceil(estimatedMinutes / 60);
-    const estimate = `${estimatedHours} hour(s)`;
+  const count = await Request.countDocuments({ category, status: "pending" });
+  const estimatedMinutes = 15 * count;
+  const estimatedHours = Math.ceil(estimatedMinutes / 60);
+  const estimate = `${estimatedHours} hour(s)`;
 
-    const request = new Request({
-      student: studentId,
-      category,
-      message,
-      semester,
-      estimatedProcessingTime: estimate
-    });
+  const request = new Request({
+    student: studentId,
+    category,
+    message,
+    semester,
+    estimatedProcessingTime: estimate
+  });
 
-    await request.save();
-    res.send("Request submitted successfully!");
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("Server error while creating request.");
-  }
+  await request.save();
+  res.send("Request submitted successfully!");
 });
+
 
 
 // View student's requests

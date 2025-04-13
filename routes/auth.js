@@ -30,21 +30,29 @@ router.post("/register", async (req, res) => {
 // Login route
 router.post("/login", async (req, res) => {
   try {
-    const user = await User.findOne({ email: req.body.email });
-    if (!user) return res.status(401).send("User not found");
-    
-    const match = await bcrypt.compare(req.body.password, user.password);
-    if (!match) return res.status(401).send("Invalid password");
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
 
-    if (!user.isVerified) return res.status(403).send("Email not verified");
+    if (!user) return res.status(401).send("User not found.");
+    if (!user.isVerified) return res.status(403).send("Email not verified.");
+
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) return res.status(401).send("Invalid password.");
 
     const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET);
-    res.json({ token, role: user.role });
+
+    res.json({
+      token,
+      role: user.role,
+      userId: user._id // ✅ INCLUDE THIS!
+    });
   } catch (err) {
     console.error(err);
-    res.status(500).send("Login error");
+    res.status(500).send("Login error.");
   }
 });
+
+module.exports = router;
 
 // Email verification route (simulated)
 router.get("/verify/:email", async (req, res) => {

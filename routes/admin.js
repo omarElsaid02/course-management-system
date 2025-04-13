@@ -21,6 +21,17 @@ router.get("/queue/:category", async (req, res) => {
   res.json(list);
 });
 
+router.get("/request/:id", async (req, res) => {
+  try {
+    const request = await Request.findById(req.params.id).populate("student");
+    if (!request) return res.status(404).send("Request not found");
+    res.json(request);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error fetching request detail");
+  }
+});
+
 // Get a random request from all queues
 router.get("/random", async (req, res) => {
   const [randomRequest] = await Request.aggregate([
