@@ -116,6 +116,7 @@
         // Save token and redirect
         localStorage.setItem("token", data.token);
         localStorage.setItem("role", data.role);
+        localStorage.setItem("userId", data.userId);
         alert("✅ Login successful!");
 
         if (data.role === "student") {

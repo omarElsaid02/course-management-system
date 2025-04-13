@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <title>New Request</title>
@@ -35,7 +36,8 @@
 
     <button class="btn btn-primary" onclick="submitRequest()">Submit</button>
     <!-- <button class="btn btn-secondary" onclick="window.location.assign('/student-dashboard.html')">Back</button> -->
-    <button class="btn btn-secondary" onclick="window.location.assign('/student-dashboard.html')">← Back to Dashboard</button>
+    <button class="btn btn-secondary" onclick="window.location.assign('/student-dashboard.html')">← Back to
+      Dashboard</button>
 
     <p id="eta" class="mt-3 text-success fw-bold"></p>
   </div>
@@ -45,6 +47,11 @@
       const category = document.getElementById("category").value;
       const message = document.getElementById("message").value;
       const studentId = localStorage.getItem("userId");
+
+      if (!studentId) {
+        alert("User not logged in!");
+        return;
+      }
 
       if (!category || !message) {
         alert("Please fill all fields.");
@@ -64,4 +71,5 @@
     }
   </script>
 </body>
+
 </html>

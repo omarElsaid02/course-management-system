@@ -9,6 +9,8 @@ const adminRoutes = require("./routes/admin");
 const { generateCSRF, validateCSRF } = require("./middleware/csrf");
 
 const app = express();
+
+// Middleware
 app.use(cors());
 app.use(express.json());
 
@@ -20,30 +22,21 @@ mongoose.connect(process.env.MONGO_URI, {
 .then(() => console.log("✅ MongoDB connected"))
 .catch((err) => console.error("❌ MongoDB connection error:", err));
 
-// Dummy route to test
-// app.get("/", (req, res) => {
-//   res.send("Course Management System API is working!");
-// });
-
-
-// Serve static files from the CoreUI folder
+// Serve static files from CoreUI
 app.use(express.static(path.join(__dirname, "views/coreui")));
 
-// Serve index page as the main UI
+// Redirect root ("/") to login page
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "views/coreui/index.html"));
+  res.redirect("/login.html");
 });
 
-app.get("/login", (req, res) => {
+// ===== STUDENT PAGES =====
+app.get("/login.html", (req, res) => {
   res.sendFile(path.join(__dirname, "views/coreui/login.html"));
 });
 
-app.get("/register", (req, res) => {
+app.get("/register.html", (req, res) => {
   res.sendFile(path.join(__dirname, "views/coreui/register.html"));
-});
-
-app.get("/request", (req, res) => {
-  res.sendFile(path.join(__dirname, "views/coreui/request.html"));
 });
 
 app.get("/student-dashboard.html", (req, res) => {
@@ -54,7 +47,7 @@ app.get("/student-request.html", (req, res) => {
   res.sendFile(path.join(__dirname, "views/coreui/student-request.html"));
 });
 
-// Department Head Pages
+// ===== HEAD (ADMIN) PAGES =====
 app.get("/head-dashboard.html", (req, res) => {
   res.sendFile(path.join(__dirname, "views/coreui/head-dashboard.html"));
 });
@@ -67,22 +60,21 @@ app.get("/head-request.html", (req, res) => {
   res.sendFile(path.join(__dirname, "views/coreui/head-request.html"));
 });
 
+// ===== API ROUTES =====
 app.use("/api/auth", authRoutes);
 app.use("/api/requests", requestRoutes);
 app.use("/api/admin", adminRoutes);
 
-// For routes that need CSRF protection
+// ===== CSRF TESTING (optional demo) =====
 app.get("/csrf-token", generateCSRF, (req, res) => {
   res.json({ token: req.csrfToken });
 });
 
-// Example protected POST
 app.post("/api/protected", validateCSRF, (req, res) => {
   res.send("✅ CSRF-protected data received");
 });
 
-
-// Start server
+// ===== START SERVER =====
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);

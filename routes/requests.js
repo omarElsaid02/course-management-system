@@ -26,9 +26,21 @@ router.post("/", async (req, res) => {
 
 // View student's requests
 router.get("/student/:id", async (req, res) => {
-  const requests = await Request.find({ student: req.params.id }).sort({ createdAt: -1 });
-  res.json(requests);
+  const studentId = req.params.id;
+
+  if (!studentId || studentId === "null") {
+    return res.status(400).send("Invalid student ID");
+  }
+
+  try {
+    const requests = await Request.find({ student: studentId });
+    res.json(requests);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error fetching requests");
+  }
 });
+
 
 // Cancel a request
 router.put("/cancel/:id", async (req, res) => {
