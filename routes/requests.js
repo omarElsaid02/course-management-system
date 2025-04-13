@@ -35,3 +35,5 @@ router.put("/cancel/:id", async (req, res) => {
   const request = await Request.findByIdAndUpdate(req.params.id, { status: "cancelled" });
   res.send("Request cancelled.");
 });
+
+module.exports = router;

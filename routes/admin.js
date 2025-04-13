@@ -46,3 +46,5 @@ router.post("/update/:id", async (req, res) => {
   console.log(`Simulated Email: Request ${status}. Note: ${note}`);
   res.send("Request updated.");
 });
+
+module.exports = router;
