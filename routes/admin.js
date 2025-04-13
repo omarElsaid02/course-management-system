@@ -17,9 +17,14 @@ router.get("/queues", async (req, res) => {
 
 // Get all requests from a specific queue
 router.get("/queue/:category", async (req, res) => {
-  const list = await Request.find({ category: req.params.category, status: "pending" });
-  res.json(list);
+  const category = req.params.category;
+
+  const requests = await Request.find({ category, status: "pending" })
+    .populate("student"); // ✅ this brings in student name & info
+
+  res.json(requests);
 });
+
 
 router.get("/request/:id", async (req, res) => {
   try {
