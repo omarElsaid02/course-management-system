@@ -3,6 +3,8 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const authRoutes = require("./routes/auth");
+const requestRoutes = require("./routes/requests");
+const adminRoutes = require("./routes/admin");
 
 const app = express();
 app.use(cors());
@@ -21,6 +23,8 @@ app.get("/", (req, res) => {
   res.send("Course Management System API is working!");
 });
 app.use("/api/auth", authRoutes);
+app.use("/api/requests", requestRoutes);
+app.use("/api/admin", adminRoutes);
 
 // Start server
 const PORT = process.env.PORT || 3000;
