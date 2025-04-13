@@ -5,6 +5,7 @@
   <meta charset="UTF-8" />
   <title>Department Head Dashboard</title>
   <link href="css/style.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <script>
@@ -25,35 +26,31 @@
 
   <div class="container mt-5">
     <h2>Department Head Dashboard</h2>
-
     <div class="d-flex justify-content-end mb-3">
       <button class="btn btn-secondary" onclick="logout()">Logout</button>
     </div>
 
-    <div class="row">
-      <div class="col-md-6">
-        <div class="card mb-4">
+    <div class="mb-3">
+      <button class="btn btn-warning" onclick="showRandomRequest()">🎲 I don’t know where to begin!</button>
+    </div>
+
+    <div class="row mt-4 mb-4">
+      <div class="col-md-3">
+        <div class="card">
           <div class="card-header">Requests by Category</div>
           <div class="card-body">
             <canvas id="categoryChart"></canvas>
           </div>
         </div>
       </div>
-
-      <div class="col-md-6">
-        <div class="card mb-4">
+      <div class="col-md-3">
+        <div class="card">
           <div class="card-header">Requests by Status</div>
           <div class="card-body">
             <canvas id="statusChart"></canvas>
           </div>
         </div>
       </div>
-    </div>
-
-
-
-    <div class="mb-3">
-      <button class="btn btn-warning" onclick="showRandomRequest()">🎲 I don’t know where to begin!</button>
     </div>
 
     <div id="queueContainer" class="row"></div>
@@ -104,50 +101,50 @@
   </script>
 
   <script>
-    async function loadCharts() {
-      const res = await fetch("/api/admin/request-stats");
+    async function loadDashboardCharts() {
+      const res = await fetch("/api/admin/dashboard/stats");
       const data = await res.json();
 
-      // Prepare data
-      const catLabels = data.byCategory.map(item => item._id);
-      const catCounts = data.byCategory.map(item => item.count);
+      // Prepare Category Chart Data
+      const categoryLabels = Object.keys(data.byCategory);
+      const categoryCounts = Object.values(data.byCategory);
 
-      const statusLabels = data.byStatus.map(item => item._id);
-      const statusCounts = data.byStatus.map(item => item.count);
+      // Prepare Status Chart Data
+      const statusLabels = Object.keys(data.byStatus);
+      const statusCounts = Object.values(data.byStatus);
 
-      // Category Chart
+      // Category Pie Chart
       new Chart(document.getElementById("categoryChart"), {
-        type: 'bar',
+        type: "pie",
         data: {
-          labels: catLabels,
+          labels: categoryLabels,
           datasets: [{
-            label: 'Requests per Category',
-            data: catCounts,
-            backgroundColor: 'rgba(54, 162, 235, 0.7)'
+            label: "Requests by Category",
+            data: categoryCounts,
+            backgroundColor: [
+              "#36a2eb", "#ffcd56", "#4bc0c0", "#ff6384", "#9966ff", "#ff9f40"
+            ]
           }]
         }
       });
 
-      // Status Chart
+      // Status Pie Chart
       new Chart(document.getElementById("statusChart"), {
-        type: 'pie',
+        type: "pie",
         data: {
           labels: statusLabels,
           datasets: [{
-            label: 'Requests by Status',
+            label: "Requests by Status",
             data: statusCounts,
             backgroundColor: [
-              'rgba(255, 99, 132, 0.7)',
-              'rgba(255, 206, 86, 0.7)',
-              'rgba(75, 192, 192, 0.7)',
-              'rgba(153, 102, 255, 0.7)'
+              "#28a745", "#ffc107", "#dc3545", "#007bff"
             ]
           }]
         }
       });
     }
 
-    loadCharts();
+    loadDashboardCharts();
   </script>
 
 </body>

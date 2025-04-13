@@ -65,22 +65,18 @@ router.post("/update/:id", async (req, res) => {
 
 
 // Request stats grouped by category and status
-router.get("/request-stats", async (req, res) => {
-  try {
-    const byCategory = await Request.aggregate([
-      { $group: { _id: "$category", count: { $sum: 1 } } }
-    ]);
+router.get("/dashboard/stats", async (req, res) => {
+  const allRequests = await Request.find({});
 
-    const byStatus = await Request.aggregate([
-      { $group: { _id: "$status", count: { $sum: 1 } } }
-    ]);
+  const byCategory = {};
+  const byStatus = {};
 
-    res.json({ byCategory, byStatus });
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("Failed to fetch request stats");
-  }
+  allRequests.forEach((req) => {
+    byCategory[req.category] = (byCategory[req.category] || 0) + 1;
+    byStatus[req.status] = (byStatus[req.status] || 0) + 1;
+  });
+
+  res.json({ byCategory, byStatus });
 });
-
 
 module.exports = router;
