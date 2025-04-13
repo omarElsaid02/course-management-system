@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Request Detail</title>
+  <link href="css/style.css" rel="stylesheet" />
+</head>
+<body class="bg-light">
+
+  <div class="container mt-5">
+    <h2>Request Details</h2>
+    <div id="requestDetail" class="mb-4"></div>
+
+    <div class="mb-3">
+      <label for="note">Admin Note</label>
+      <textarea class="form-control" id="note" rows="3"></textarea>
+    </div>
+
+    <button class="btn btn-success me-2" onclick="updateRequest('resolved')">Resolve</button>
+    <button class="btn btn-danger" onclick="updateRequest('rejected')">Reject</button>
+  </div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const requestId = urlParams.get("id");
+
+    async function fetchRequest() {
+      const res = await fetch(`/api/admin/queue/${requestId}`);
+      const req = await res.json();
+
+      const div = document.getElementById("requestDetail");
+      div.innerHTML = `
+        <p><strong>Category:</strong> ${req.category}</p>
+        <p><strong>Message:</strong> ${req.message}</p>
+        <p><strong>Status:</strong> ${req.status}</p>
+        <p><strong>ETA:</strong> ${req.estimatedProcessingTime}</p>
+      `;
+    }
+
+    async function updateRequest(status) {
+      const note = document.getElementById("note").value;
+      const res = await fetch(`/api/admin/update/${requestId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ note, status })
+      });
+
+      const text = await res.text();
+      alert(text);
+      window.location.assign("/head-dashboard.html");
+    }
+
+    fetchRequest();
+  </script>
+</body>
+</html>
