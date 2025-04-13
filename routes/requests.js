@@ -5,24 +5,34 @@ const router = express.Router();
 
 // Create a request
 router.post("/", async (req, res) => {
-  const { studentId, category, message } = req.body;
+  const { category, message, semester, studentId } = req.body;
 
-  // Estimate time based on queue
-  const count = await Request.countDocuments({ category, status: "pending" });
-  const estimatedMinutes = 15 * count;
-  const estimatedHours = Math.ceil(estimatedMinutes / 60);
-  const estimate = `${estimatedHours} hour(s)`;
+  if (!studentId || !category || !message || !semester) {
+    return res.status(400).send("Missing required fields.");
+  }
 
-  const request = new Request({
-    student: studentId,
-    category,
-    message,
-    estimatedProcessingTime: estimate
-  });
+  try {
+    const count = await Request.countDocuments({ category, status: "pending" });
+    const estimatedMinutes = 15 * count;
+    const estimatedHours = Math.ceil(estimatedMinutes / 60);
+    const estimate = `${estimatedHours} hour(s)`;
 
-  await request.save();
-  res.send("Request submitted successfully!");
+    const request = new Request({
+      student: studentId,
+      category,
+      message,
+      semester,
+      estimatedProcessingTime: estimate
+    });
+
+    await request.save();
+    res.send("Request submitted successfully!");
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server error while creating request.");
+  }
 });
+
 
 // View student's requests
 router.get("/student/:id", async (req, res) => {

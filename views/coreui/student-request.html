@@ -30,6 +30,17 @@
     </div>
 
     <div class="mb-3">
+      <label for="semester">Semester</label>
+      <select id="semester" class="form-select">
+        <option disabled selected>Select semester</option>
+        <option value="Spring">Spring</option>
+        <option value="Summer">Summer</option>
+        <option value="Fall">Fall</option>
+      </select>
+    </div>
+
+
+    <div class="mb-3">
       <label>Message</label>
       <textarea class="form-control" id="message" rows="4"></textarea>
     </div>
@@ -46,29 +57,24 @@
     async function submitRequest() {
       const category = document.getElementById("category").value;
       const message = document.getElementById("message").value;
+      const semester = document.getElementById("semester").value;
       const studentId = localStorage.getItem("userId");
 
-      if (!studentId) {
-        alert("User not logged in!");
-        return;
-      }
-
-      if (!category || !message) {
-        alert("Please fill all fields.");
+      if (!category || !message || !semester || !studentId) {
+        alert("Please fill in all fields.");
         return;
       }
 
       const res = await fetch("/api/requests", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ category, message, studentId })
+        body: JSON.stringify({ category, message, semester, studentId })
       });
 
-      const result = await res.text();
-      document.getElementById("eta").innerText = result.includes("Request submitted")
-        ? "✅ Request submitted successfully! Check your dashboard for updates."
-        : "❌ Submission failed.";
+      const text = await res.text();
+      alert(text);
     }
+
   </script>
 </body>
 
