@@ -1,14 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <title>Student Dashboard</title>
   <link href="css/style.css" rel="stylesheet" />
 </head>
+<script>
+  const role = localStorage.getItem("role");
+  if (!role) {
+    alert("Unauthorized access. Please log in.");
+    window.location.assign("/login.html");
+  }
+  if (role !== "student") {
+  alert("Access denied. Students only.");
+  window.location.assign("/login.html");
+}
+
+</script>
+
+
 <body class="bg-light">
 
   <div class="container mt-5">
     <h2>Welcome, Student</h2>
+    <div class="d-flex justify-content-between mb-3">
+      <button class="btn btn-primary" onclick="window.location.assign('/student-request.html')">➕ New Request</button>
+      <button class="btn btn-secondary" onclick="logout()">Logout</button>
+    </div>
+
 
     <div class="mb-4">
       <label for="semester">Filter by Semester:</label>
@@ -85,6 +105,13 @@
     }
 
     fetchRequests();
+
+    function logout() {
+      localStorage.clear();
+      window.location.assign("/login.html");
+    }
+
   </script>
 </body>
+
 </html>

@@ -5,6 +5,14 @@
   <title>Request Detail</title>
   <link href="css/style.css" rel="stylesheet" />
 </head>
+<script>
+  const role = localStorage.getItem("role");
+  if (!role) {
+    alert("Unauthorized access. Please log in.");
+    window.location.assign("/login.html");
+  }
+</script>
+
 <body class="bg-light">
 
   <div class="container mt-5">

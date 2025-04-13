@@ -5,6 +5,14 @@
   <title>New Request</title>
   <link href="css/style.css" rel="stylesheet" />
 </head>
+<script>
+  const role = localStorage.getItem("role");
+  if (!role) {
+    alert("Unauthorized access. Please log in.");
+    window.location.assign("/login.html");
+  }
+</script>
+
 <body class="bg-light">
 
   <div class="container mt-5">
@@ -26,7 +34,8 @@
     </div>
 
     <button class="btn btn-primary" onclick="submitRequest()">Submit</button>
-    <button class="btn btn-secondary" onclick="window.location.assign('/student-dashboard.html')">Back</button>
+    <!-- <button class="btn btn-secondary" onclick="window.location.assign('/student-dashboard.html')">Back</button> -->
+    <button class="btn btn-secondary" onclick="window.location.assign('/student-dashboard.html')">← Back to Dashboard</button>
 
     <p id="eta" class="mt-3 text-success fw-bold"></p>
   </div>

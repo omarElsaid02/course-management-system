@@ -41,6 +41,14 @@
     <link href="css/examples.css" rel="stylesheet">
     <link href="vendors/@coreui/chartjs/css/coreui-chartjs.css" rel="stylesheet">
   </head>
+  <script>
+    const role = localStorage.getItem("role");
+    if (!role) {
+      alert("Unauthorized access. Please log in.");
+      window.location.assign("/login.html");
+    }
+  </script>
+  
   <body>
     <div class="sidebar sidebar-dark sidebar-fixed" id="sidebar">
       <div class="sidebar-brand d-none d-md-flex">

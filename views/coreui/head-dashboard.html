@@ -1,14 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <title>Department Head Dashboard</title>
   <link href="css/style.css" rel="stylesheet" />
 </head>
+
+<script>
+  const role = localStorage.getItem("role");
+  if (!role) {
+    alert("Unauthorized access. Please log in.");
+    window.location.assign("/login.html");
+  }
+  if (role !== "head") {
+  alert("Access denied. Department heads only.");
+  window.location.assign("/login.html");
+}
+
+</script>
+
+
 <body class="bg-light">
 
   <div class="container mt-5">
     <h2>Department Head Dashboard</h2>
+
+    <div class="d-flex justify-content-end mb-3">
+      <button class="btn btn-secondary" onclick="logout()">Logout</button>
+    </div>
+
 
     <div class="mb-3">
       <button class="btn btn-warning" onclick="showRandomRequest()">🎲 I don’t know where to begin!</button>
@@ -53,6 +74,15 @@
     }
 
     fetchQueues();
+
+    function logout() {
+      localStorage.clear();
+      window.location.assign("/login.html");
+    }
+
   </script>
+
+
 </body>
+
 </html>
