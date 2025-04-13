@@ -56,19 +56,19 @@
                     <use xlink:href="vendors/@coreui/icons/svg/free.svg#cil-user"></use>
 
                   </svg></span>
-                  <input id="name" class="form-control" type="text" placeholder="Full Name" />
+                <input id="name" class="form-control" type="text" placeholder="Full Name" />
               </div>
               <div class="input-group mb-3"><span class="input-group-text">
                   <svg class="icon">
                     <use xlink:href="vendors/@coreui/icons/svg/free.svg#cil-envelope-open"></use>
                   </svg></span>
-                  <input id="email" class="form-control" type="email" placeholder="Email" />
+                <input id="email" class="form-control" type="email" placeholder="Email" />
               </div>
               <div class="input-group mb-3"><span class="input-group-text">
                   <svg class="icon">
                     <use xlink:href="vendors/@coreui/icons/svg/free.svg#cil-lock-locked"></use>
                   </svg></span>
-                  <input id="password" class="form-control" type="password" placeholder="Password" />
+                <input id="password" class="form-control" type="password" placeholder="Password" />
               </div>
               <!-- <div class="input-group mb-4"><span class="input-group-text">
                   <svg class="icon">
@@ -80,7 +80,7 @@
                 <span class="input-group-text">🎓</span>
                 <input id="degree" class="form-control" type="text" placeholder="Degree Name" />
               </div>
-  
+
               <!-- Role -->
               <div class="input-group mb-4">
                 <span class="input-group-text">👤</span>
@@ -89,7 +89,7 @@
                   <option value="head">Department Head</option>
                 </select>
               </div>
-              
+
               <button class="btn btn-block btn-success" type="button" onclick="register()">Create Account</button>
 
             </div>
@@ -110,32 +110,35 @@
       const password = document.getElementById("password").value;
       const degree = document.getElementById("degree").value;
       const role = document.getElementById("role").value;
-    
+
       if (!name || !email || !password || !degree || !role) {
         alert("Please fill in all fields.");
         return;
       }
-    
+
       try {
         const res = await fetch("/api/auth/register", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ name, email, password, degree, role })
         });
-    
+
         const text = await res.text();
-        if (!res.ok) {
-          alert(data); // or display a styled error message
-          return;
+        alert(text);
+
+        // ✅ If registration is successful, redirect to login
+        if (text.includes("verification link")) {
+          setTimeout(() => {
+            window.location.assign("/login.html");
+          }, 1000); // small delay to let user read message
         }
-        window.location.assign("/");
       } catch (err) {
         console.error(err);
         alert("Registration failed.");
       }
     }
-    </script>
-    
+  </script>
+
 
 </body>
 
