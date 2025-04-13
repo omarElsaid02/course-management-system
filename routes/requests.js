@@ -1,9 +1,11 @@
 const express = require("express");
 const Request = require("../models/Request");
+const moment = require("moment-business-time");
 
 const router = express.Router();
 
 // Create a request
+
 router.post("/", async (req, res) => {
   const { category, message, semester, studentId } = req.body;
 
@@ -11,23 +13,30 @@ router.post("/", async (req, res) => {
     return res.status(400).send("Missing required fields.");
   }
 
-  const count = await Request.countDocuments({ category, status: "pending" });
-  const estimatedMinutes = 15 * count;
-  const estimatedHours = Math.ceil(estimatedMinutes / 60);
-  const estimate = `${estimatedHours} hour(s)`;
+  try {
+    const pendingCount = await Request.countDocuments({ category, status: "pending" });
+    const minutesToAdd = pendingCount * 15;
 
-  const request = new Request({
-    student: studentId,
-    category,
-    message,
-    semester,
-    estimatedProcessingTime: estimate
-  });
+    const now = moment();
+    const estimatedDateTime = now.clone().addWorkingTime(minutesToAdd, 'minutes');
 
-  await request.save();
-  res.send("Request submitted successfully!");
+    const estimate = estimatedDateTime.format("dddd, MMM Do YYYY, h:mm A");
+
+    const request = new Request({
+      student: studentId,
+      category,
+      message,
+      semester,
+      estimatedProcessingTime: estimate
+    });
+
+    await request.save();
+    res.send("Request submitted successfully!");
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error saving request.");
+  }
 });
-
 
 
 // View student's requests
