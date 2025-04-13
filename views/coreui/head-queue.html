@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Queue</title>
+  <link href="css/style.css" rel="stylesheet" />
+</head>
+<body class="bg-light">
+
+  <div class="container mt-5">
+    <h2>Request Queue</h2>
+    <table class="table table-bordered">
+      <thead class="table-dark">
+        <tr>
+          <th>Student</th>
+          <th>Message</th>
+          <th>ETA</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="requestList"></tbody>
+    </table>
+  </div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const category = urlParams.get("category");
+
+    async function fetchQueue() {
+      const res = await fetch(`/api/admin/queue/${encodeURIComponent(category)}`);
+      const data = await res.json();
+      const tbody = document.getElementById("requestList");
+
+      data.forEach(req => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${req.student?.name || "N/A"}</td>
+          <td>${req.message}</td>
+          <td>${req.estimatedProcessingTime}</td>
+          <td>
+            <a href="/head-request.html?id=${req._id}" class="btn btn-sm btn-info">View</a>
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    fetchQueue();
+  </script>
+</body>
+</html>

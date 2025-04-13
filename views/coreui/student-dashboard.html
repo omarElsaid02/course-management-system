@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Student Dashboard</title>
+  <link href="css/style.css" rel="stylesheet" />
+</head>
+<body class="bg-light">
+
+  <div class="container mt-5">
+    <h2>Welcome, Student</h2>
+
+    <div class="mb-4">
+      <label for="semester">Filter by Semester:</label>
+      <select id="semester" class="form-select" onchange="filterBySemester()">
+        <option value="">All</option>
+        <option value="Spring">Spring</option>
+        <option value="Summer">Summer</option>
+        <option value="Fall">Fall</option>
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <button class="btn btn-success" onclick="window.location.assign('/student-request.html')">New Request</button>
+    </div>
+
+    <table class="table table-bordered">
+      <thead class="table-dark">
+        <tr>
+          <th>Category</th>
+          <th>Message</th>
+          <th>Status</th>
+          <th>ETA</th>
+          <th>Semester</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="requestList"></tbody>
+    </table>
+  </div>
+
+  <script>
+    let allRequests = [];
+
+    async function fetchRequests() {
+      const studentId = localStorage.getItem("userId");
+      const res = await fetch(`/api/requests/student/${studentId}`);
+      const data = await res.json();
+      allRequests = data;
+      renderRequests(data);
+    }
+
+    function renderRequests(requests) {
+      const tbody = document.getElementById("requestList");
+      tbody.innerHTML = "";
+
+      requests.forEach((req) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${req.category}</td>
+          <td>${req.message}</td>
+          <td>${req.status}</td>
+          <td>${req.estimatedProcessingTime || "-"}</td>
+          <td>${req.semester || "N/A"}</td>
+          <td>
+            ${req.status === "pending" ? `<button class="btn btn-danger btn-sm" onclick="cancelRequest('${req._id}')">Cancel</button>` : ""}
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    function filterBySemester() {
+      const selected = document.getElementById("semester").value;
+      const filtered = selected ? allRequests.filter(r => r.semester === selected) : allRequests;
+      renderRequests(filtered);
+    }
+
+    async function cancelRequest(id) {
+      if (!confirm("Are you sure to cancel this request?")) return;
+
+      await fetch(`/api/requests/cancel/${id}`, { method: "PUT" });
+      alert("Request cancelled.");
+      fetchRequests();
+    }
+
+    fetchRequests();
+  </script>
+</body>
+</html>

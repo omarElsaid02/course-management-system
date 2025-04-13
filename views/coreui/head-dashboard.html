@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Department Head Dashboard</title>
+  <link href="css/style.css" rel="stylesheet" />
+</head>
+<body class="bg-light">
+
+  <div class="container mt-5">
+    <h2>Department Head Dashboard</h2>
+
+    <div class="mb-3">
+      <button class="btn btn-warning" onclick="showRandomRequest()">🎲 I don’t know where to begin!</button>
+    </div>
+
+    <div id="queueContainer" class="row"></div>
+  </div>
+
+  <script>
+    async function fetchQueues() {
+      const res = await fetch("/api/admin/queues");
+      const queues = await res.json();
+
+      const container = document.getElementById("queueContainer");
+      container.innerHTML = "";
+
+      Object.keys(queues).forEach(category => {
+        const card = document.createElement("div");
+        card.className = "col-md-4 mb-3";
+        card.innerHTML = `
+          <div class="card border-primary">
+            <div class="card-body">
+              <h5 class="card-title">${category}</h5>
+              <p class="card-text">Pending Requests: ${queues[category].length}</p>
+              <a href="/head-queue.html?category=${encodeURIComponent(category)}" class="btn btn-primary">View Queue</a>
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    async function showRandomRequest() {
+      const res = await fetch("/api/admin/random");
+      const req = await res.json();
+
+      if (req && req._id) {
+        window.location.assign(`/head-request.html?id=${req._id}`);
+      } else {
+        alert("No pending requests found.");
+      }
+    }
+
+    fetchQueues();
+  </script>
+</body>
+</html>

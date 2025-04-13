@@ -1,4 +1,5 @@
 require("dotenv").config();
+const path = require("path");
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -20,9 +21,39 @@ mongoose.connect(process.env.MONGO_URI, {
 .catch((err) => console.error("❌ MongoDB connection error:", err));
 
 // Dummy route to test
+// app.get("/", (req, res) => {
+//   res.send("Course Management System API is working!");
+// });
+
+
+// Serve static files from the CoreUI folder
+app.use(express.static(path.join(__dirname, "views/coreui")));
+
+// Serve index page as the main UI
 app.get("/", (req, res) => {
-  res.send("Course Management System API is working!");
+  res.sendFile(path.join(__dirname, "views/coreui/index.html"));
 });
+
+app.get("/login", (req, res) => {
+  res.sendFile(path.join(__dirname, "views/coreui/login.html"));
+});
+
+app.get("/register", (req, res) => {
+  res.sendFile(path.join(__dirname, "views/coreui/register.html"));
+});
+
+app.get("/request", (req, res) => {
+  res.sendFile(path.join(__dirname, "views/coreui/request.html"));
+});
+
+app.get("/student-dashboard.html", (req, res) => {
+  res.sendFile(path.join(__dirname, "views/coreui/student-dashboard.html"));
+});
+
+app.get("/student-request.html", (req, res) => {
+  res.sendFile(path.join(__dirname, "views/coreui/student-request.html"));
+});
+
 app.use("/api/auth", authRoutes);
 app.use("/api/requests", requestRoutes);
 app.use("/api/admin", adminRoutes);
