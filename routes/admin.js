@@ -63,4 +63,24 @@ router.post("/update/:id", async (req, res) => {
   res.send("Request updated.");
 });
 
+
+// Request stats grouped by category and status
+router.get("/request-stats", async (req, res) => {
+  try {
+    const byCategory = await Request.aggregate([
+      { $group: { _id: "$category", count: { $sum: 1 } } }
+    ]);
+
+    const byStatus = await Request.aggregate([
+      { $group: { _id: "$status", count: { $sum: 1 } } }
+    ]);
+
+    res.json({ byCategory, byStatus });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Failed to fetch request stats");
+  }
+});
+
+
 module.exports = router;

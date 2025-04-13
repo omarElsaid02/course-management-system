@@ -14,9 +14,9 @@
     window.location.assign("/login.html");
   }
   if (role !== "head") {
-  alert("Access denied. Department heads only.");
-  window.location.assign("/login.html");
-}
+    alert("Access denied. Department heads only.");
+    window.location.assign("/login.html");
+  }
 
 </script>
 
@@ -29,6 +29,27 @@
     <div class="d-flex justify-content-end mb-3">
       <button class="btn btn-secondary" onclick="logout()">Logout</button>
     </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card mb-4">
+          <div class="card-header">Requests by Category</div>
+          <div class="card-body">
+            <canvas id="categoryChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="card mb-4">
+          <div class="card-header">Requests by Status</div>
+          <div class="card-body">
+            <canvas id="statusChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
 
 
     <div class="mb-3">
@@ -81,6 +102,54 @@
     }
 
   </script>
+
+  <script>
+    async function loadCharts() {
+      const res = await fetch("/api/admin/request-stats");
+      const data = await res.json();
+
+      // Prepare data
+      const catLabels = data.byCategory.map(item => item._id);
+      const catCounts = data.byCategory.map(item => item.count);
+
+      const statusLabels = data.byStatus.map(item => item._id);
+      const statusCounts = data.byStatus.map(item => item.count);
+
+      // Category Chart
+      new Chart(document.getElementById("categoryChart"), {
+        type: 'bar',
+        data: {
+          labels: catLabels,
+          datasets: [{
+            label: 'Requests per Category',
+            data: catCounts,
+            backgroundColor: 'rgba(54, 162, 235, 0.7)'
+          }]
+        }
+      });
+
+      // Status Chart
+      new Chart(document.getElementById("statusChart"), {
+        type: 'pie',
+        data: {
+          labels: statusLabels,
+          datasets: [{
+            label: 'Requests by Status',
+            data: statusCounts,
+            backgroundColor: [
+              'rgba(255, 99, 132, 0.7)',
+              'rgba(255, 206, 86, 0.7)',
+              'rgba(75, 192, 192, 0.7)',
+              'rgba(153, 102, 255, 0.7)'
+            ]
+          }]
+        }
+      });
+    }
+
+    loadCharts();
+  </script>
+
 
 
 </body>
